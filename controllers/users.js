@@ -23,7 +23,7 @@ module.exports.updateAvatar = (req, res) => {
     { avatar: req.body.avatar },
     { new: true },
   )
-    .then((user) => res.send(`Аватар пользователя "${user.name}" обновлён успешно`))
+    .then((user) => res.send({ data: user }))
     .catch((err) => res.status(500).send({ message: err }));
 };
 
@@ -42,6 +42,6 @@ module.exports.updateInfo = (req, res) => {
     update,
     { new: true },
   )
-    .then((user) => res.send(`Данные пользователя "${user.name}" обновлены успешно`))
+    .then((user) => res.send({ data: user }))
     .catch((err) => res.status(500).send({ message: err }));
 };
