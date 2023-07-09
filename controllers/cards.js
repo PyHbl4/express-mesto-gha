@@ -4,17 +4,17 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(400).send({ message: err }));
+    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
 };
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(400).send({ message: err }));
+    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
 };
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(400).send({ message: err }));
+    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
 };
 
 module.exports.addLike = (req, res) => {
@@ -24,7 +24,7 @@ module.exports.addLike = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(400).send({ message: err }));
+    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
 };
 
 module.exports.removeLike = (req, res) => {
@@ -34,5 +34,5 @@ module.exports.removeLike = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(400).send({ message: err }));
+    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
 };
