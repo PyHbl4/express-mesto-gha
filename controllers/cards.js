@@ -13,7 +13,7 @@ module.exports.getCards = (req, res) => {
 };
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send(`Карточка "${card.name}" удалена успешно`))
+    .then((card) => res.send({ data: card }))
     .catch((err) => res.status(500).send({ message: err }));
 };
 
@@ -23,7 +23,7 @@ module.exports.addLike = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send(`Лайк карточке "${card.name}" поставлен успешно`))
+    .then((card) => res.send({ data: card }))
     .catch((err) => res.status(500).send({ message: err }));
 };
 
@@ -33,6 +33,6 @@ module.exports.removeLike = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send(`Лайк c карточки "${card.name}" снят успешно`))
+    .then((card) => res.send({ data: card }))
     .catch((err) => res.status(500).send({ message: err }));
 };
