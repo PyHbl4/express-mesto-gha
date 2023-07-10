@@ -36,7 +36,13 @@ module.exports.updateAvatar = (req, res) => {
     { new: true },
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err.message });
+      } else {
+        res.status(err.statusCode || 500).send({ message: err.message });
+      }
+    });
 };
 
 module.exports.updateInfo = (req, res) => {
@@ -55,5 +61,11 @@ module.exports.updateInfo = (req, res) => {
     { new: true },
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err.message });
+      } else {
+        res.status(err.statusCode || 500).send({ message: err.message });
+      }
+    });
 };
