@@ -9,12 +9,18 @@ module.exports.createUser = (req, res) => {
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: err }));
+    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
 };
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err }));
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(404).send('Пользователь не найден');
+      }
+    })
+    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
 };
 
 module.exports.updateAvatar = (req, res) => {
