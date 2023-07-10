@@ -55,10 +55,11 @@ module.exports.updateInfo = (req, res) => {
   if (req.body.about) {
     update.about = req.body.about;
   }
-  User.findByIdAndUpdate(
-    req.user._id,
+
+  User.findOneAndUpdate(
+    { _id: req.user._id },
     update,
-    { new: true },
+    { new: true, runValidators: true },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
