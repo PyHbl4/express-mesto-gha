@@ -9,7 +9,7 @@ module.exports.createUser = (req, res) => {
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
+    .catch((err) => res.status(400).send(err));
 };
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
@@ -20,7 +20,7 @@ module.exports.getUserById = (req, res) => {
         res.status(404).send('Пользователь не найден');
       }
     })
-    .catch((err) => res.status(400).send(`Произошла ошибка ${err.name} : ${err.message}`));
+    .catch((err) => res.status(400).send(err));
 };
 
 module.exports.updateAvatar = (req, res) => {
