@@ -16,7 +16,7 @@ module.exports.createUser = (req, res) => {
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(BAD_REQUEST).send({ message: 'Произошла ошибка на стороне сервера' }));
+    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' }));
 };
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
