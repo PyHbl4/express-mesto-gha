@@ -21,10 +21,20 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  const userId = req.user._id;
+  const cardId = req.params.cardId;
+
+  Card.findById(cardId)
     .then((card) => {
       if (card) {
-        res.send({ data: card });
+        if (card.owner.toString() === userId.toString()) {
+          Card.findByIdAndRemove(cardId)
+            .then(() => {
+              res.send({ data: card });
+            });
+        } else {
+          res.status(401).send({ message: 'нельзя удалить карточку, которую Вы не создавали' });
+        }
       } else {
         res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
       }
