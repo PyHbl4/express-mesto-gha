@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const {
   createUser,
   login,
@@ -44,5 +44,5 @@ app.use('/cards', require('./routes/cards'));
 app.use((req, res) => {
   res.status(404).json({ message: 'Запрашиваемая страница не найдена' });
 });
-
+app.use(errors());
 app.listen(PORT);
