@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 const {
   createCard,
   getCards,
@@ -6,7 +7,6 @@ const {
   addLike,
   removeLike,
 } = require('../controllers/cards');
-const { celebrate, Joi } = require('celebrate');
 
 router.post('/', celebrate({
   body: Joi.object().keys({

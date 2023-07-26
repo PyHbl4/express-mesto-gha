@@ -23,6 +23,10 @@ router.patch('/me', celebrate({
     avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
   }),
 }), updateInfo);
-router.patch('/me/avatar', updateAvatar);
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
+  }),
+}), updateAvatar);
 
 module.exports = router;
