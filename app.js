@@ -32,18 +32,17 @@ app.post('/signup', celebrate({
     avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
   }),
 }), createUser);
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64a965224849158cb9ecfb8a',
-  };
-  next();
-});
-// app.use(auth);
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '64a965224849158cb9ecfb8a',
+//   };
+//   next();
+// });
+app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use((req, res, next) => {
-  // res.status(404).json({ message: 'Запрашиваемая страница не найдена' });
   next(new NotFoundError('Запрашиваемая страница не найдена'));
 });
 app.use(errors());
