@@ -8,7 +8,12 @@ const {
 } = require('../controllers/cards');
 const { celebrate, Joi } = require('celebrate');
 
-router.post('/', createCard);
+router.post('/', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string().uri({ scheme: ['http', 'https'] }).required(),
+  }),
+}), createCard);
 router.get('/', getCards);
 router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
