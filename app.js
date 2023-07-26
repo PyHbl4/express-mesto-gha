@@ -7,6 +7,7 @@ const {
   login,
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/not-found-error');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -31,18 +32,31 @@ app.post('/signup', celebrate({
     avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
   }),
 }), createUser);
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '64a965224849158cb9ecfb8a',
-//   };
-//   next();
-// });
-app.use(auth);
+app.use((req, res, next) => {
+  req.user = {
+    _id: '64a965224849158cb9ecfb8a',
+  };
+  next();
+});
+// app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use((req, res) => {
-  res.status(404).json({ message: 'Запрашиваемая страница не найдена' });
+app.use((req, res, next) => {
+  // res.status(404).json({ message: 'Запрашиваемая страница не найдена' });
+  next(new NotFoundError('Запрашиваемая страница не найдена'));
 });
 app.use(errors());
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+  return next;
+});
 app.listen(PORT);
