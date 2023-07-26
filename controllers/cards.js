@@ -1,26 +1,29 @@
 const Card = require('../models/card');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/constants');
+const BadRequestError = require('../errors/bad-request-error');
+const ServerError = require('../errors/internal-server-error');
+const NotFoundError = require('../errors/not-found-error');
+const ForbiddenError = require('../errors/forbidden-error');
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
+        next(new BadRequestError('Произошла ошибка, неверный запрос'));
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
+        next(new ServerError('Произошла ошибка на стороне сервера'));
       }
     });
 };
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' }));
+    .catch(() => next(new ServerError('Произошла ошибка на стороне сервера')));
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const userId = req.user._id;
   const { cardId } = req.params;
 
@@ -33,22 +36,22 @@ module.exports.deleteCard = (req, res) => {
               res.send({ data: card });
             });
         } else {
-          res.status(403).send({ message: 'нельзя удалить карточку, которую Вы не создавали' });
+          next(new ForbiddenError('нельзя удалить карточку, которую Вы не создавали'));
         }
       } else {
-        res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
+        next(new NotFoundError('Карточка не найдена'));
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
+        next(new BadRequestError('Произошла ошибка, неверный запрос'));
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
+        next(new ServerError('Произошла ошибка на стороне сервера'));
       }
     });
 };
 
-module.exports.addLike = (req, res) => {
+module.exports.addLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -58,19 +61,19 @@ module.exports.addLike = (req, res) => {
       if (card) {
         res.send({ data: card });
       } else {
-        res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
+        next(new NotFoundError('Карточка не найдена'));
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
+        next(new BadRequestError('Произошла ошибка, неверный запрос'));
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
+        next(new ServerError('Произошла ошибка на стороне сервера'));
       }
     });
 };
 
-module.exports.removeLike = (req, res) => {
+module.exports.removeLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -80,14 +83,14 @@ module.exports.removeLike = (req, res) => {
       if (card) {
         res.send({ data: card });
       } else {
-        res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
+        next(new NotFoundError('Карточка не найдена'));
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
+        next(new BadRequestError('Произошла ошибка, неверный запрос'));
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
+        next(new ServerError('Произошла ошибка на стороне сервера'));
       }
     });
 };

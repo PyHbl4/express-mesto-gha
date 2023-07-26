@@ -4,4 +4,5 @@ module.exports = {
   INTERNAL_SERVER_ERROR: 500,
   AUTH_ERROR: 401,
   CONFLICT: 409,
+  FORBIDDEN: 403,
 };
