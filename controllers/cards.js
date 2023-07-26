@@ -33,7 +33,7 @@ module.exports.deleteCard = (req, res) => {
               res.send({ data: card });
             });
         } else {
-          res.status(401).send({ message: 'нельзя удалить карточку, которую Вы не создавали' });
+          res.status(403).send({ message: 'нельзя удалить карточку, которую Вы не создавали' });
         }
       } else {
         res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
