@@ -25,7 +25,14 @@ module.exports.createUser = (req, res) => {
       email,
       password: hashedPassword,
     })
-      .then((user) => res.send({ data: user }))
+      .then((user) => res.send({
+        data: {
+          name: user.name,
+          about: user.about,
+          email: user.email,
+          avatar: user.avatar,
+        },
+      }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
