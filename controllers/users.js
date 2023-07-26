@@ -86,6 +86,24 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(NOT_FOUND).send({ message: 'Пользователь не найден' });
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
+      } else {
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
+      }
+    });
+};
+
 module.exports.updateAvatar = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
