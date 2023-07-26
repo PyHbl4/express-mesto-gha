@@ -6,7 +6,7 @@ const {
   createUser,
   login,
 } = require('./controllers/users');
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -31,13 +31,13 @@ app.post('/signup', celebrate({
     avatar: Joi.string().uri({ scheme: ['http', 'https'] }).default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
   }),
 }), createUser);
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64bfa7c673bf5bb2ef9d1ed5',
-  };
-  next();
-});
-// app.use(auth);
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '64bfa7c673bf5bb2ef9d1ed5',
+//   };
+//   next();
+// });
+app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
