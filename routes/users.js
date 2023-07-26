@@ -12,8 +12,8 @@ const {
 router.get('/', getUsers);
 router.get('/me', getCurrentUser);
 router.get('/:userId', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().required().hex(),
+  params: Joi.object().keys({
+    userId: Joi.string().hex().length(24),
   }),
 }), getUserById);
 router.patch('/me', updateInfo);
