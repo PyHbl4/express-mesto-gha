@@ -11,36 +11,42 @@ module.exports.createUser = (req, res) => {
     email,
     password,
   } = req.body;
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        res.status(409).send({ message: 'Пользователь с таким email уже существует' });
+      } else {
+        bcrypt.hash(password, 10, (error, hashedPassword) => {
+          if (error) {
+            res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
+            return;
+          }
 
-  bcrypt.hash(password, 10, (error, hashedPassword) => {
-    if (error) {
-      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
-      return;
-    }
-
-    User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hashedPassword,
-    })
-      .then((user) => res.send({
-        data: {
-          name: user.name,
-          about: user.about,
-          email: user.email,
-          avatar: user.avatar,
-        },
-      }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
-        } else {
-          res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
-        }
-      });
-  });
+          User.create({
+            name,
+            about,
+            avatar,
+            email,
+            password: hashedPassword,
+          })
+            .then((user) => res.send({
+              data: {
+                name: user.name,
+                about: user.about,
+                email: user.email,
+                avatar: user.avatar,
+              },
+            }))
+            .catch((err) => {
+              if (err.name === 'ValidationError') {
+                res.status(BAD_REQUEST).send({ message: 'Произошла ошибка, неверный запрос' });
+              } else {
+                res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на стороне сервера' });
+              }
+            });
+        });
+      }
+    });
 };
 
 module.exports.login = (req, res) => {
