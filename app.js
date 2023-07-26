@@ -28,7 +28,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30).default('Жак Ив Кусто'),
     about: Joi.string().min(2).max(30).default('Исследователь'),
-    avatar: Joi.uri(),
+    avatar: Joi.string().uri({ scheme: ['http', 'https'] }).default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
   }),
 }), createUser);
 app.use((req, res, next) => {
