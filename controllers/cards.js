@@ -7,7 +7,7 @@ const ForbiddenError = require('../errors/forbidden-error');
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Произошла ошибка, неверный запрос'));
@@ -31,7 +31,7 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => {
       if (card) {
         if (card.owner.toString() === userId.toString()) {
-          Card.findByIdAndRemove(cardId)
+          Card.deleteOne(card)
             .then(() => {
               res.send({ data: card });
             });
